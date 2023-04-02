@@ -29,6 +29,6 @@ namespace pixy2
     //% parts="pixy2"
     int getBlocks(bool wait, uint8_t sigmap, uint8_t maxBlocks)
     {
-        return getPixy()->getBlocks(wait, sigmap, maxBlocks);
+        return getPixy()->ccc.getBlocks(wait, sigmap, maxBlocks);
     }
 }
