@@ -65,7 +65,7 @@ struct Version
   {
     char buf[64];
     sprintf(buf, "hardware ver: 0x%x firmware ver: %d.%d.%d %s", hardware, firmwareMajor, firmwareMinor, firmwareBuild, firmwareType);
-    Serial.println(buf);
+    printf("%s\n", buf);
   }
   
   uint16_t hardware;
@@ -202,7 +202,7 @@ template <class LinkType> int16_t TPixy2<LinkType>::getSync()
       if (j>=4)
       {
 #ifdef PIXY_DEBUG
-        Serial.println("error: no response");
+        printf("error: no response\n");
 #endif		  
         return PIXY_RESULT_ERROR;
       }
@@ -241,7 +241,7 @@ template <class LinkType> int16_t TPixy2<LinkType>::recvPacket()
     if (csSerial!=csCalc)
     {
 #ifdef PIXY_DEBUG
-      Serial.println("error: checksum");
+      printf("error: checksum\n");
 #endif
       return PIXY_RESULT_CHECKSUM_ERROR;
     }
