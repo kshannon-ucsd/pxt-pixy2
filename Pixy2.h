@@ -27,7 +27,7 @@ class Link2SPI
 public:
     int8_t open(uint32_t arg)
     {
-        spiFormat(8, 3);
+        spiFormat(8, 3);  // Microbit only supports 8 bits and the Pixy2 runs on SPI mode 3
         return 0;
     }
 
