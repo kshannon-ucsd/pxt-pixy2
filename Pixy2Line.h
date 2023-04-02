@@ -17,6 +17,8 @@
 // all communication modes (SPI, I2C and UART) can share the same code.
 //
 
+#include "pxt.h"
+
 #ifndef _PIXY2LINE_H
 #define _PIXY2LINE_H
 
@@ -48,12 +50,12 @@
 
 struct Vector
 {
-    void print()
-    {
-        char buf[64];
-        sprintf(buf, "vector: (%d %d) (%d %d) index: %d flags %d", m_x0, m_y0, m_x1, m_y1, m_index, m_flags);
-        printf("%s\n", buf);
-    }
+    // void print()
+    // {
+    //     char buf[64];
+    //     std::sprintf(buf, "vector: (%d %d) (%d %d) index: %d flags %d", m_x0, m_y0, m_x1, m_y1, m_index, m_flags);
+    //     std::printf("%s\n", buf);
+    // }
 
     uint8_t m_x0;
     uint8_t m_y0;
@@ -72,18 +74,18 @@ struct IntersectionLine
 
 struct Intersection
 {
-    void print()
-    {
-        char buf[64];
-        uint8_t i;
-        sprintf(buf, "intersection: (%d %d)", m_x, m_y);
-        printf("%s\n", buf);
-        for (i = 0; i < m_n; i++)
-        {
-            sprintf(buf, "  %d: index: %d angle: %d", i, m_intLines[i].m_index, m_intLines[i].m_angle);
-            printf("%s\n", buf);
-        }
-    }
+    // void print()
+    // {
+    //     char buf[64];
+    //     uint8_t i;
+    //     std::sprintf(buf, "intersection: (%d %d)", m_x, m_y);
+    //     std::printf("%s\n", buf);
+    //     for (i = 0; i < m_n; i++)
+    //     {
+    //         std::sprintf(buf, "  %d: index: %d angle: %d", i, m_intLines[i].m_index, m_intLines[i].m_angle);
+    //         std::printf("%s\n", buf);
+    //     }
+    // }
 
     uint8_t m_x;
     uint8_t m_y;
@@ -95,12 +97,12 @@ struct Intersection
 
 struct Barcode
 {
-    void print()
-    {
-        char buf[64];
-        sprintf(buf, "Barcode: (%d %d), val: %d flags: %d", m_x, m_y, m_code, m_flags);
-        printf("%s\n", buf);
-    }
+    // void print()
+    // {
+    //     char buf[64];
+    //     std::sprintf(buf, "Barcode: (%d %d), val: %d flags: %d", m_x, m_y, m_code, m_flags);
+    //     std::printf("%s\n", buf);
+    // }
 
     uint8_t m_x;
     uint8_t m_y;

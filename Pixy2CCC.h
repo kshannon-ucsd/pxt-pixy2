@@ -17,6 +17,8 @@
 // all communication modes (SPI, I2C and UART) can share the same code.
 //
 
+#include "pxt.h"
+
 #ifndef _PIXY2CCC_H
 #define _PIXY2CCC_H
 
@@ -44,29 +46,29 @@
 struct Block
 {
     // print block structure!
-    void print()
-    {
-        int i, j;
-        char buf[128], sig[6], d;
-        bool flag;
-        if (m_signature > CCC_MAX_SIGNATURE) // color code! (CC)
-        {
-            // convert signature number to an octal string
-            for (i = 12, j = 0, flag = false; i >= 0; i -= 3)
-            {
-                d = (m_signature >> i) & 0x07;
-                if (d > 0 && !flag)
-                    flag = true;
-                if (flag)
-                    sig[j++] = d + '0';
-            }
-            sig[j] = '\0';
-            sprintf(buf, "CC block sig: %s (%d decimal) x: %d y: %d width: %d height: %d angle: %d index: %d age: %d", sig, m_signature, m_x, m_y, m_width, m_height, m_angle, m_index, m_age);
-        }
-        else // regular block.  Note, angle is always zero, so no need to print
-            sprintf(buf, "sig: %d x: %d y: %d width: %d height: %d index: %d age: %d", m_signature, m_x, m_y, m_width, m_height, m_index, m_age);
-        printf("%s\n", buf);
-    }
+    // void print()
+    // {
+    //     int i, j;
+    //     char buf[128], sig[6], d;
+    //     bool flag;
+    //     if (m_signature > CCC_MAX_SIGNATURE) // color code! (CC)
+    //     {
+    //         // convert signature number to an octal string
+    //         for (i = 12, j = 0, flag = false; i >= 0; i -= 3)
+    //         {
+    //             d = (m_signature >> i) & 0x07;
+    //             if (d > 0 && !flag)
+    //                 flag = true;
+    //             if (flag)
+    //                 sig[j++] = d + '0';
+    //         }
+    //         sig[j] = '\0';
+    //         std::sprintf(buf, "CC block sig: %s (%d decimal) x: %d y: %d width: %d height: %d angle: %d index: %d age: %d", sig, m_signature, m_x, m_y, m_width, m_height, m_angle, m_index, m_age);
+    //     }
+    //     else // regular block.  Note, angle is always zero, so no need to print
+    //         std::sprintf(buf, "sig: %d x: %d y: %d width: %d height: %d index: %d age: %d", m_signature, m_x, m_y, m_width, m_height, m_index, m_age);
+    //     std::printf("%s\n", buf);
+    // }
 
     uint16_t m_signature;
     uint16_t m_x;

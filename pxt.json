@@ -7,9 +7,13 @@
         "core": "*"
     },
     "files": [
+        "Pixy2.h",
+        "Pixy2CCC.h",
+        "Pixy2Line.h",
+        "Pixy2Video.h",
+        "TPixy2.h",
+        "pixy2.cpp",
         "pixy2.ts",
-        "enums.d.ts",
-        "shims.d.ts",
         "README.md"
     ],
     "testFiles": [

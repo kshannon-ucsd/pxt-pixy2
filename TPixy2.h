@@ -16,11 +16,13 @@
 // it to communicate with Pixy over I2C, SPI, UART or USB using the
 // Pixy packet protocol.
 
+#include "pxt.h"
+
 #ifndef _TPIXY2_H
 #define _TPIXY2_H
 
 // uncomment to turn on debug prints to console
-#define PIXY_DEBUG
+// #define PIXY_DEBUG
 
 #define PIXY_DEFAULT_ARGVAL 0x80000000
 #define PIXY_BUFFERSIZE 0x104
@@ -61,12 +63,12 @@
 
 struct Version
 {
-    void print()
-    {
-        char buf[64];
-        sprintf(buf, "hardware ver: 0x%x firmware ver: %d.%d.%d %s", hardware, firmwareMajor, firmwareMinor, firmwareBuild, firmwareType);
-        printf("%s\n", buf);
-    }
+    // void print()
+    // {
+    //     char buf[64];
+    //     std::sprintf(buf, "hardware ver: 0x%x firmware ver: %d.%d.%d %s", hardware, firmwareMajor, firmwareMinor, firmwareBuild, firmwareType);
+    //     std::printf("%s\n", buf);
+    // }
 
     uint16_t hardware;
     uint8_t firmwareMajor;
@@ -153,7 +155,7 @@ int8_t TPixy2<LinkType>::init(uint32_t arg)
 
     // wait for pixy to be ready -- that is, Pixy takes a second or 2 boot up
     // getVersion is an effective "ping".  We timeout after 5s.
-    for (t0 = millis(); millis() - t0 < 5000;)
+    for (t0 = current_time_ms(); current_time_ms() - t0 < 5000;)
     {
         if (getVersion() >= 0) // successful version get -> pixy is ready
         {
@@ -202,9 +204,9 @@ int16_t TPixy2<LinkType>::getSync()
         {
             if (j >= 4)
             {
-#ifdef PIXY_DEBUG
-                printf("error: no response\n");
-#endif
+// #ifdef PIXY_DEBUG
+//                 std::printf("error: no response\n");
+// #endif
                 return PIXY_RESULT_ERROR;
             }
             sleep_us(25);
@@ -241,9 +243,9 @@ int16_t TPixy2<LinkType>::recvPacket()
 
         if (csSerial != csCalc)
         {
-#ifdef PIXY_DEBUG
-            printf("error: checksum\n");
-#endif
+// #ifdef PIXY_DEBUG
+//             std::printf("error: checksum\n");
+// #endif
             return PIXY_RESULT_CHECKSUM_ERROR;
         }
     }

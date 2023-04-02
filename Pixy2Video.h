@@ -17,6 +17,8 @@
 // all communication modes (SPI, I2C and UART) can share the same code.
 //
 
+#include "pxt.h"
+
 #ifndef _PIXY2VIDEO_H
 #define _PIXY2VIDEO_H
 
