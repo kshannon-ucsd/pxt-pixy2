@@ -63,7 +63,7 @@ int8_t Pixy2Video<LinkType>::getRGB(uint16_t x, uint16_t y, uint8_t *r, uint8_t 
             // deal with program changing
             else if (m_pixy->m_type == PIXY_TYPE_RESPONSE_ERROR && (int8_t)m_pixy->m_buf[0] == PIXY_RESULT_PROG_CHANGING)
             {
-                delayMicroseconds(500); // don't be a drag
+                sleep_us(500); // don't be a drag
                 continue;
             }
         }

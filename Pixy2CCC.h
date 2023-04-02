@@ -140,7 +140,7 @@ int8_t Pixy2CCC<LinkType>::getBlocks(bool wait, uint8_t sigmap, uint8_t maxBlock
 
         // If we're waiting for frame data, don't thrash Pixy with requests.
         // We can give up half a millisecond of latency (worst case)
-        delayMicroseconds(500);
+        sleep_us(500);
     }
 }
 
