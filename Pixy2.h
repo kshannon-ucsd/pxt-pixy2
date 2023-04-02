@@ -25,45 +25,45 @@ using namespace pins;
 class Link2SPI
 {
 public:
-  int8_t open(uint32_t arg)
-  {
-    spiFormat(8, 3);
-    return 0;
-  }
-
-  void close()
-  {
-    if (NULL != spi)
+    int8_t open(uint32_t arg)
     {
-      delete spi;
-      spi = NULL;
+        spiFormat(8, 3);
+        return 0;
     }
-  }
 
-  int16_t recv(uint8_t *buf, uint8_t len, uint16_t *cs = NULL)
-  {
-    uint8_t i;
-    Buffer req = createBuffer(len); // Automatically set to all 0s
-    Buffer resp = createBuffer(len);
-    if (cs)
-      *cs = 0;
-    spiTransfer(req, resp);
-    for (i = 0; i < len; i++)
+    void close()
     {
-      buf[i] = resp.data[i];
-      if (cs)
-        *cs += buf[i];
+        if (NULL != spi)
+        {
+            delete spi;
+            spi = NULL;
+        }
     }
-    return len;
-  }
 
-  int16_t send(uint8_t *buf, uint8_t len)
-  {
-    Buffer req = mkBuffer(buf, len);
-    Buffer resp = createBuffer(len);
-    spiTransfer(buf, resp);
-    return len;
-  }
+    int16_t recv(uint8_t *buf, uint8_t len, uint16_t *cs = NULL)
+    {
+        uint8_t i;
+        Buffer req = createBuffer(len); // Automatically set to all 0s
+        Buffer resp = createBuffer(len);
+        if (cs)
+            *cs = 0;
+        spiTransfer(req, resp);
+        for (i = 0; i < len; i++)
+        {
+            buf[i] = resp.data[i];
+            if (cs)
+                *cs += buf[i];
+        }
+        return len;
+    }
+
+    int16_t send(uint8_t *buf, uint8_t len)
+    {
+        Buffer req = mkBuffer(buf, len);
+        Buffer resp = createBuffer(len);
+        spiTransfer(buf, resp);
+        return len;
+    }
 };
 
 typedef TPixy2<Link2SPI> Pixy2;
