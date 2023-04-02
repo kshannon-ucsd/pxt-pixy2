@@ -12,54 +12,59 @@
 //
 // end license header
 //
-// Arduino ICSP SPI link class 
 
 #ifndef _PIXY2_H
 #define _PIXY2_H
 
 #include "TPixy2.h"
-#include "SPI.h"
+#include "pxt.h"
+using namespace pins;
 
-#define PIXY_SPI_CLOCKRATE       2000000
+#define PIXY_SPI_CLOCKRATE 2000000
 
 class Link2SPI
 {
 public:
   int8_t open(uint32_t arg)
   {
-    SPI.begin();
-    SPI.beginTransaction(SPISettings(PIXY_SPI_CLOCKRATE, MSBFIRST, SPI_MODE3));
-	return 0;
+    spiFormat(8, 3);
+    return 0;
   }
-	
+
   void close()
   {
-    SPI.endTransaction();
+    if (NULL != spi)
+    {
+      delete spi;
+      spi = NULL;
+    }
   }
-    
-  int16_t recv(uint8_t *buf, uint8_t len, uint16_t *cs=NULL)
+
+  int16_t recv(uint8_t *buf, uint8_t len, uint16_t *cs = NULL)
   {
     uint8_t i;
+    Buffer req = createBuffer(len); // Automatically set to all 0s
+    Buffer resp = createBuffer(len);
     if (cs)
       *cs = 0;
-    for (i=0; i<len; i++)
+    spiTransfer(req, resp);
+    for (i = 0; i < len; i++)
     {
-      buf[i] = SPI.transfer(0x00);
+      buf[i] = resp.data[i];
       if (cs)
         *cs += buf[i];
     }
     return len;
   }
-    
+
   int16_t send(uint8_t *buf, uint8_t len)
   {
-    uint8_t i;
-    for (i=0; i<len; i++)
-      SPI.transfer(buf[i]);
+    Buffer req = mkBuffer(buf, len);
+    Buffer resp = createBuffer(len);
+    spiTransfer(buf, resp);
     return len;
   }
 };
-
 
 typedef TPixy2<Link2SPI> Pixy2;
 
