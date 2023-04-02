@@ -1,1 +1,5 @@
 .vscode
+node_modules
+projects
+built
+pxt_modules

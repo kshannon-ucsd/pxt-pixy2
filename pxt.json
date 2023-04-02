@@ -13,7 +13,8 @@
         "Pixy2Video.h",
         "TPixy2.h",
         "pixy2.cpp",
-        "pixy2.ts",
+        "shims.d.ts",
+        "enums.d.ts",
         "README.md"
     ],
     "testFiles": [
