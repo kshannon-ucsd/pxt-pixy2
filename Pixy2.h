@@ -19,7 +19,13 @@
 #include "TPixy2.h"
 #include "pxt.h"
 
-namespace pins {
+namespace String_
+{
+    String concat(String s, String other);
+}
+
+namespace pins
+{
     void spiTransfer(Buffer command, Buffer response);
     void spiFormat(int bits, int mode);
 }
@@ -31,7 +37,7 @@ class Link2SPI
 public:
     int8_t open(uint32_t arg)
     {
-        pins::spiFormat(8, 3);  // Microbit only supports 8 bits and the Pixy2 runs on SPI mode 3
+        pins::spiFormat(8, 3); // Microbit only supports 8 bits and the Pixy2 runs on SPI mode 3
         return 0;
     }
 

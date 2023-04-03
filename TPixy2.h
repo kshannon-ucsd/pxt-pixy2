@@ -61,7 +61,7 @@
 #include "Pixy2Line.h"
 #include "Pixy2Video.h"
 
-struct Version
+class Version
 {
     // void print()
     // {
@@ -69,12 +69,19 @@ struct Version
     //     std::sprintf(buf, "hardware ver: 0x%x firmware ver: %d.%d.%d %s", hardware, firmwareMajor, firmwareMinor, firmwareBuild, firmwareType);
     //     std::printf("%s\n", buf);
     // }
-
-    uint16_t hardware;
-    uint8_t firmwareMajor;
-    uint8_t firmwareMinor;
-    uint16_t firmwareBuild;
-    char firmwareType[10];
+    public:
+        uint16_t hardware;
+        uint8_t firmwareMajor;
+        uint8_t firmwareMinor;
+        uint16_t firmwareBuild;
+        char firmwareType[10];
+        Version(uint16_t hw, uint8_t fmaj, uint8_t fmin, uint16_t fbuild)
+        {
+            hardware = hw;
+            firmwareMajor = fmaj;
+            firmwareMinor = fmin;
+            firmwareBuild = fbuild;
+        }
 };
 
 struct Resolution

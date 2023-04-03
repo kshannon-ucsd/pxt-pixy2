@@ -22,6 +22,7 @@
 #ifndef _PIXY2CCC_H
 #define _PIXY2CCC_H
 
+// TODO: Might have to add all these #defines into an enum for appropriate use
 #define CCC_MAX_SIGNATURE 7
 
 #define CCC_RESPONSE_BLOCKS 0x21

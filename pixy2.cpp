@@ -8,6 +8,7 @@ namespace pixy2
     // TODO: Set complicated/unneeded functions to advanced=true so they don't show up in the toolbox
     // -------------- General APIs --------------
     Pixy2 *pixy = nullptr;
+    String COMMA = mkString(",", 1);
     Pixy2 *getPixy()
     {
         if (pixy == nullptr)
@@ -18,44 +19,71 @@ namespace pixy2
         return pixy;
     }
 
+    // TODO: Can probably write better conversion methods here
+    String convertResolutionToString()
+    {
+        String res = String_::concat(numops::toString(fromUInt(getPixy()->frameWidth)), COMMA);
+        res = String_::concat(res, numops::toString(fromUInt(getPixy()->frameHeight)));
+        return res;
+    }
+
+    String convertVersionToString()
+    {
+        Version *version = getPixy()->version;
+        String res = String_::concat(numops::toString(fromUInt(version->hardware)), COMMA);
+        res = String_::concat(res, String_::concat(numops::toString(fromUInt(version->firmwareMajor)), COMMA));
+        res = String_::concat(res, String_::concat(numops::toString(fromUInt(version->firmwareMinor)), COMMA));
+        res = String_::concat(res, String_::concat(numops::toString(fromUInt(version->firmwareBuild)), COMMA));
+        res = String_::concat(res, mkString(version->firmwareType));
+        return res;
+    }
+
+    String convertRGBToString(uint8_t r, uint8_t g, uint8_t b)
+    {
+        String res = String_::concat(numops::toString(fromUInt(r)), COMMA);
+        res = String_::concat(res, String_::concat(numops::toString(fromUInt(g)), COMMA));
+        res = String_::concat(res, numops::toString(fromUInt(b)));
+        return res;
+    }
+
     /**
      * getVersion() queries and receives the firmware and hardware version of Pixy2. and then returns the version member variable. It is called automatically as part of init().
-     * @returns It returns Pixy2's version information containing hardware, firmwareMajor, firmwareMinor, firmwareBuild, and firmwareType member variables. If it fails, it returns 0 for all member variables.
+     * @returns It returns Pixy2's version information containing hardware, firmwareMajor, firmwareMinor, firmwareBuild, and firmwareType as comma separated string (in that order). If it fails, it returns null.
      */
     //% help=pixy2/get-version
     //% weight=99 blockGap=8
     //% block="get version"
     //% blockId=pixy2_get_version
     //% parts="pixy2"
-    Version getVersion()
+    String getVersion()
     {
         int8_t result = getPixy()->getVersion();
         if (result < 0)
         {
-            return {0, 0, 0, 0, 0};
+            return NULL;
         }
-        return *(getPixy()->version);
+        return convertVersionToString();
     }
 
     /**
      * changeProg() instructs Pixy2 to switch programs. Note, calling changeProg() will call getResolution() automatically and update frameWidth and frameHeight.
      * @param prog It takes a string argument that indicates the name of the program. The argument can be a partial string of the program name as long as it is unique with respect to the other program names.
-     * @returns It returns the resolution of the new program containing frameWidth and frameHeight member variables. If it fails, it returns 0 for all member variables.
+     * @returns It returns the resolution of the new program containing frameWidth, frameHeight as a string. If it fails, it returns an null.
      */
     //% help=pixy2/change-prog
     //% weight=98 blockGap=8
     //% block="change prog %prog"
     //% blockId=pixy2_change_prog
     //% parts="pixy2"
-    Resolution changeProg(String prog)
+    String changeProg(String prog)
     {
         const char *str = prog->getUTF8Data();
         int8_t result = getPixy()->changeProg(str);
         if (result < 0)
         {
-            return {0, 0};
+            return NULL;
         }
-        return {getPixy()->frameWidth, getPixy()->frameHeight};
+        return convertResolutionToString();
     }
 
     /**
@@ -124,21 +152,21 @@ namespace pixy2
     // TODO: Pixy2 will automatically change programs if, for example, you call getBlocks() from the color connected components program followed by getMainFeatures() from the line tracking program. These "automatic program changes" will not update frameWidth and frameHeight member variables. This cpp file changes the behaviour by calling changeProg for any function called in a separate program. Should this behaviour be kept?
     /**
      * getResolution() gets the width and height of the frames used by the current program.
-     * @returns It returns the resolution of the new program containing frameWidth and frameHeight member variables. If it fails, it returns 0 for all member variables.
+     * @returns It returns the resolution of the new program containing frameWidth, frameHeight as a string. If it fails, it returns an null.
      */
     //% help=pixy2/get-resolution
     //% weight=93 blockGap=8
     //% block="get resolution"
     //% blockId=pixy2_get_resolution
     //% parts="pixy2"
-    Resolution getResolution()
+    String getResolution()
     {
         int8_t result = getPixy()->getResolution();
         if (result < 0)
         {
-            return {0, 0};
+            return NULL;
         }
-        return {getPixy()->frameWidth, getPixy()->frameHeight};
+        return convertResolutionToString();
     }
 
     /**
@@ -157,101 +185,103 @@ namespace pixy2
 
     // ------------------------ Color Connected Components APIs ------------------------
 
-    /**
-     * cccGetBlocks() gets all detected blocks in the most recent frame. The returned blocks are sorted by area, with the largest blocks appearing first in the blocks array.
-     * @param wait Setting wait to false causes cccGetBlocks() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes cccGetBlocks() to block (wait) until the next frame of block data is available. Note, there may be no block data if no objects have been detected.
-     * @param sigmap sigmap is a bitmap of all 7 signatures from which you wish to receive block data. For example, if you are only interested in block data from signature 1, you would pass in a value of 1. If you are interested in block data from both signatures 1 and 2, you would pass in a value of 3. If you are interested in block data from signatures 1, 2, and 3, you would pass a value of 7, and so on. The most-significant-bit (128 or 0x80) is used for color-codes. A value of 255 (default) indicates that you are interested in all block data.
-     * @param maxblocks maxblocks indicates the maximum number of blocks you wish to receive. For example, passing in a value of 1 would return at most 1 block. A value of 255 (default) indicates that you are interested in all blocks.
-     * @returns It returns an array of blocks. If it fails, it returns NULL. Each block contains the following information: m_signature, m_x, m_y, m_width, m_height, m_angle, m_index, m_age.
-     */
-    //% help=pixy2/ccc-get-blocks
-    //% weight=91 blockGap=8
-    //% block="ccc get blocks"
-    //% blockId=pixy2_ccc_get_blocks
-    //% parts="pixy2"
-    Block *cccGetBlocks(bool wait, uint8_t sigmap, uint8_t maxBlocks)
-    {
-        Resolution resolution = changeProg(mkString("color_connected_components"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
-        {
-            return NULL;
-        }
-        int8_t result = getPixy()->ccc.getBlocks(wait, sigmap, maxBlocks);
-        if (result < 0)
-        {
-            return NULL;
-        }
-        return getPixy()->ccc.blocks;
-    }
+    // TODO: Cannot use custom structs in this file, have to find out a clever way to send this information
 
-    // ------------------------ Line Tracking APIs ------------------------
+    // /**
+    //  * cccGetBlocks() gets all detected blocks in the most recent frame. The returned blocks are sorted by area, with the largest blocks appearing first in the blocks array.
+    //  * @param wait Setting wait to false causes cccGetBlocks() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes cccGetBlocks() to block (wait) until the next frame of block data is available. Note, there may be no block data if no objects have been detected.
+    //  * @param sigmap sigmap is a bitmap of all 7 signatures from which you wish to receive block data. For example, if you are only interested in block data from signature 1, you would pass in a value of 1. If you are interested in block data from both signatures 1 and 2, you would pass in a value of 3. If you are interested in block data from signatures 1, 2, and 3, you would pass a value of 7, and so on. The most-significant-bit (128 or 0x80) is used for color-codes. A value of 255 (default) indicates that you are interested in all block data.
+    //  * @param maxblocks maxblocks indicates the maximum number of blocks you wish to receive. For example, passing in a value of 1 would return at most 1 block. A value of 255 (default) indicates that you are interested in all blocks.
+    //  * @returns It returns an array of blocks. If it fails, it returns NULL. Each block contains the following information: m_signature, m_x, m_y, m_width, m_height, m_angle, m_index, m_age.
+    //  */
+    // //% help=pixy2/ccc-get-blocks
+    // //% weight=91 blockGap=8
+    // //% block="ccc get blocks"
+    // //% blockId=pixy2_ccc_get_blocks
+    // //% parts="pixy2"
+    // Block *cccGetBlocks(bool wait, uint8_t sigmap, uint8_t maxBlocks)
+    // {
+    //     String resolution = changeProg(mkString("color_connected_components"));
+    //     if (resolution == NULL)
+    //     {
+    //         return NULL;
+    //     }
+    //     int8_t result = getPixy()->ccc.getBlocks(wait, sigmap, maxBlocks);
+    //     if (result < 0)
+    //     {
+    //         return NULL;
+    //     }
+    //     return getPixy()->ccc.blocks;
+    // }
 
-    /**
-     * lineGetMainFeatures() gets the latest features including the Vector, any intersection that connects to the Vector, and barcodes.  lineGetMainFeatures() tries to send only the most relevant information. Some notes:
-        The line tracking algorithm finds the best Vector candidate and begins tracking it from frame to frame 1). The Vector is often the only feature lineGetMainFeatures() returns.
-        Intersections are reported after they meet the filtering constraint. Only intersections that connect to the Vector are reported.
-        Barcodes are reported after they meet the filtering constraint.
-        Each new barcode and intersection is reported only one time so your program doesn't need to keep track of which features it has/hasn't seen previously.
+    // // ------------------------ Line Tracking APIs ------------------------
 
-     * @param features [optional] The features argument is a bitwise-ORing of LINE_VECTOR (1), LINE_INTERSECTION (2), and LINE_BARCODE (4), depending on what features you are interested in. All features, if present, are returned by default.
-     * @param wait [optional] Setting wait to false causes lineGetMainFeatures() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes lineGetMainFeatures() to block (wait) until the next frame of line feature data is available, unless the current frame of features hasn't been returned before, in which case, it will return immediately with the current frame's features. Note, there may be no feature data if no features have been detected.
-     * @returns It returns the main features containing vectors, intersections, and barcodes.
-        Each vector contains the following information: m_x0, m_y0, m_x1, m_y1, m_index, m_flags.
-        Each intersection contains the following information: m_x, m_y, m_n, m_reserved, m_intLines.
-            m_initLines is an array where each intersection line has m_index, m_reserved, m_angle members.
-        Each barcode contains the following information: m_x, m_y, m_flags, m_code.
-        If it fails, it returns NULL for all member variables
-     */
-    //% help=pixy2/get-main-features
-    //% weight=90 blockGap=8
-    //% block="get main features"
-    //% blockId=pixy2_get_main_features
-    //% parts="pixy2"
-    Features lineGetMainFeatures(uint8_t features = 0x07, bool wait = true)
-    {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
-        {
-            return {NULL, NULL, NULL};
-        }
-        int8_t result = getPixy()->line.getMainFeatures(features, wait);
-        if (result < 0)
-        {
-            return {NULL, NULL, NULL};
-        }
-        return {getPixy()->line.vectors, getPixy()->line.intersections, getPixy()->line.barcodes};
-    }
+    // /**
+    //  * lineGetMainFeatures() gets the latest features including the Vector, any intersection that connects to the Vector, and barcodes.  lineGetMainFeatures() tries to send only the most relevant information. Some notes:
+    //     The line tracking algorithm finds the best Vector candidate and begins tracking it from frame to frame 1). The Vector is often the only feature lineGetMainFeatures() returns.
+    //     Intersections are reported after they meet the filtering constraint. Only intersections that connect to the Vector are reported.
+    //     Barcodes are reported after they meet the filtering constraint.
+    //     Each new barcode and intersection is reported only one time so your program doesn't need to keep track of which features it has/hasn't seen previously.
 
-    /**
-     * lineGetAllFeatures() returns all lines, intersections and barcodes that the line tracking algorithm detects.
-     * @param features [optional] The features argument is a bitwise-ORing of LINE_VECTOR (1), LINE_INTERSECTION (2), and LINE_BARCODE (4), depending on what features you are interested in. All detected features are returned by default
-     * @param wait [optional] Setting wait to false causes lineGetAllFeatures() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes lineGetAllFeatures() to block (wait) until the next frame of line feature data is available, unless the current frame of features hasn't been returned before, in which case, it will return immediately with the current frame's features. Note, there may be no feature data if no features have been detected.
-     * @returns It returns all features containing vectors, intersections, and barcodes.
-        Each vector contains the following information: m_x0, m_y0, m_x1, m_y1, m_index, m_flags.
-        Each intersection contains the following information: m_x, m_y, m_n, m_reserved, m_intLines.
-            m_initLines is an array where each intersection line has m_index, m_reserved, m_angle members.
-        Each barcode contains the following information: m_x, m_y, m_flags, m_code.
-        If it fails, it returns NULL for all member variables
-     */
-    //% help=pixy2/get-all-features
-    //% weight=89 blockGap=8
-    //% block="get all features"
-    //% blockId=pixy2_get_all_features
-    //% parts="pixy2"
-    Features lineGetAllFeatures(uint8_t features = 0x07, bool wait = true)
-    {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
-        {
-            return {NULL, NULL, NULL};
-        }
-        int8_t result = getPixy()->line.getAllFeatures(features, wait);
-        if (result < 0)
-        {
-            return {NULL, NULL, NULL};
-        }
-        return {getPixy()->line.vectors, getPixy()->line.intersections, getPixy()->line.barcodes};
-    }
+    //  * @param features [optional] The features argument is a bitwise-ORing of LINE_VECTOR (1), LINE_INTERSECTION (2), and LINE_BARCODE (4), depending on what features you are interested in. All features, if present, are returned by default.
+    //  * @param wait [optional] Setting wait to false causes lineGetMainFeatures() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes lineGetMainFeatures() to block (wait) until the next frame of line feature data is available, unless the current frame of features hasn't been returned before, in which case, it will return immediately with the current frame's features. Note, there may be no feature data if no features have been detected.
+    //  * @returns It returns the main features containing vectors, intersections, and barcodes.
+    //     Each vector contains the following information: m_x0, m_y0, m_x1, m_y1, m_index, m_flags.
+    //     Each intersection contains the following information: m_x, m_y, m_n, m_reserved, m_intLines.
+    //         m_initLines is an array where each intersection line has m_index, m_reserved, m_angle members.
+    //     Each barcode contains the following information: m_x, m_y, m_flags, m_code.
+    //     If it fails, it returns NULL for all member variables
+    //  */
+    // //% help=pixy2/get-main-features
+    // //% weight=90 blockGap=8
+    // //% block="get main features"
+    // //% blockId=pixy2_get_main_features
+    // //% parts="pixy2"
+    // Features *lineGetMainFeatures(uint8_t features = 0x07, bool wait = true)
+    // {
+    //     String resolution = changeProg(mkString("line"));
+    //     if (resolution == NULL)
+    //     {
+    //         return NULL;
+    //     }
+    //     int8_t result = getPixy()->line.getMainFeatures(features, wait);
+    //     if (result < 0)
+    //     {
+    //         return NULL;
+    //     }
+    //     return {getPixy()->line.vectors, getPixy()->line.intersections, getPixy()->line.barcodes};
+    // }
+
+    // /**
+    //  * lineGetAllFeatures() returns all lines, intersections and barcodes that the line tracking algorithm detects.
+    //  * @param features [optional] The features argument is a bitwise-ORing of LINE_VECTOR (1), LINE_INTERSECTION (2), and LINE_BARCODE (4), depending on what features you are interested in. All detected features are returned by default
+    //  * @param wait [optional] Setting wait to false causes lineGetAllFeatures() to return immediately if no new data is available (polling mode). Setting wait to true (default) causes lineGetAllFeatures() to block (wait) until the next frame of line feature data is available, unless the current frame of features hasn't been returned before, in which case, it will return immediately with the current frame's features. Note, there may be no feature data if no features have been detected.
+    //  * @returns It returns all features containing vectors, intersections, and barcodes.
+    //     Each vector contains the following information: m_x0, m_y0, m_x1, m_y1, m_index, m_flags.
+    //     Each intersection contains the following information: m_x, m_y, m_n, m_reserved, m_intLines.
+    //         m_initLines is an array where each intersection line has m_index, m_reserved, m_angle members.
+    //     Each barcode contains the following information: m_x, m_y, m_flags, m_code.
+    //     If it fails, it returns NULL for all member variables
+    //  */
+    // //% help=pixy2/get-all-features
+    // //% weight=89 blockGap=8
+    // //% block="get all features"
+    // //% blockId=pixy2_get_all_features
+    // //% parts="pixy2"
+    // Features *lineGetAllFeatures(uint8_t features = 0x07, bool wait = true)
+    // {
+    //     String resolution = changeProg(mkString("line"));
+    //     if (resolution == NULL)
+    //     {
+    //         return NULL;
+    //     }
+    //     int8_t result = getPixy()->line.getAllFeatures(features, wait);
+    //     if (result < 0)
+    //     {
+    //         return NULL;
+    //     }
+    //     return {getPixy()->line.vectors, getPixy()->line.intersections, getPixy()->line.barcodes};
+    // }
 
     /**
      * lineSetMode() function sets various modes in the line tracking algorithm
@@ -271,8 +301,8 @@ namespace pixy2
     //% parts="pixy2"
     int8_t lineSetMode(uint8_t mode)
     {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("line"));
+        if (resolution == NULL)
         {
             return -1;
         }
@@ -291,8 +321,8 @@ namespace pixy2
     //% parts="pixy2"
     int8_t lineSetNextTurn(int16_t angle)
     {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("line"));
+        if (resolution == NULL)
         {
             return -1;
         }
@@ -311,8 +341,8 @@ namespace pixy2
     //% parts="pixy2"
     int8_t lineSetDefaultTurn(int16_t angle)
     {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("line"));
+        if (resolution == NULL)
         {
             return -1;
         }
@@ -331,8 +361,8 @@ namespace pixy2
     //% parts="pixy2"
     int8_t lineSetVector(uint8_t index)
     {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("line"));
+        if (resolution == NULL)
         {
             return -1;
         }
@@ -350,8 +380,8 @@ namespace pixy2
     //% parts="pixy2"
     int8_t lineReverseVector()
     {
-        Resolution resolution = changeProg(mkString("line"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("line"));
+        if (resolution == NULL)
         {
             return -1;
         }
@@ -372,16 +402,16 @@ namespace pixy2
     //% block="video get RGB x %x y %y r %r g %g b %b saturate %saturate"
     //% blockId=pixy2_video_get_rgb
     //% parts="pixy2"
-    RGB videoGetRGB(uint16_t x, uint16_t y, bool saturate = true)
+    String videoGetRGB(uint16_t x, uint16_t y, bool saturate = true)
     {
-        Resolution resolution = changeProg(mkString("video"));
-        if (resolution.frameWidth == 0 && resolution.frameHeight == 0)
+        String resolution = changeProg(mkString("video"));
+        if (resolution == NULL)
         {
-            return {0, 0, 0};
+            return NULL;
         }
-        uint8_t r, g, b;
+        uint8_t r = 0, g = 0, b = 0;
         getPixy()->video.getRGB(x, y, &r, &g, &b, saturate);
-        return {r, g, b};
+        return convertRGBToString(r, g, b);
     }
 
 }

@@ -83,9 +83,10 @@ I haven't had a lot of experience writing C++ code for large programs. So it too
 1. You can only `#include` header files and not cpp files since it leads to definition clashes
 2. You can use any header file avaialble in the repositories mentioned in [Creating Extensions](#creating-extensions). I tried using standard library functions like printf, but it didn't work, so I would advice against that
 3. `#include pxt.h` should be sufficient for most cases since it contains all the available namespaces. If you would like to use a function inside a namespace that hasn't been defined in pxt.h, you can simply provide the function definition in your header file and you should be able to use it. Check [Pixy2.h](Pixy2.h), where `spiTransfer` and `spiFormat` functions were not defined in pxt.h. However, the functions were defined in [pins.cpp](https://github.com/microsoft/pxt-microbit/blob/master/libs/core/pins.cpp#L555) in the pxt-microbit repo.
-4. Ensure you are using the proper namespace for everything.
+4. Ensure you are using the proper namespace for everything. Asserting this, wasted a lot of time because of this.
 5. The porting required changing some functions present in Arduino to functions present on the micro:bit, like using `sleep_us` instead of `delayMicroSeconds` and `current_time_ms` instead of `millis`. If you are porting, keep such things in mind.
 6. The final cpp file that will be shimmed needs to have the same name as your extension name, should define the namespace, provide proper documentation, and have all the correct keywords to enable block usage.
+7. I couldn't figure out how to get an automatic translation of struct files in C++ to the shims.d.ts. It doesn't look plausible and I searched a lot of online repos for this. In the end, I thought that the best way would be to just convert all the outputs into a comma-separated `pxt::String` type since that can be converted to typescript string. Then, I can manually reconstruct the object in pixy2.ts file for normal use. Seems so unnecessarily complicated :/
 
 ## License
 
