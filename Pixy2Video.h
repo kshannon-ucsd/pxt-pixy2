@@ -24,6 +24,13 @@
 
 #define VIDEO_REQUEST_GET_RGB 0x70
 
+struct RGB
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+};
+
 template <class LinkType>
 class TPixy2;
 

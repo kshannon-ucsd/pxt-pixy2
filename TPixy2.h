@@ -77,6 +77,12 @@ struct Version
     char firmwareType[10];
 };
 
+struct Resolution
+{
+    uint16_t frameWidth;
+    uint16_t frameHeight;
+};
+
 template <class LinkType>
 class TPixy2
 {
@@ -204,9 +210,9 @@ int16_t TPixy2<LinkType>::getSync()
         {
             if (j >= 4)
             {
-// #ifdef PIXY_DEBUG
-//                 std::printf("error: no response\n");
-// #endif
+                // #ifdef PIXY_DEBUG
+                //                 std::printf("error: no response\n");
+                // #endif
                 return PIXY_RESULT_ERROR;
             }
             sleep_us(25);
@@ -243,9 +249,9 @@ int16_t TPixy2<LinkType>::recvPacket()
 
         if (csSerial != csCalc)
         {
-// #ifdef PIXY_DEBUG
-//             std::printf("error: checksum\n");
-// #endif
+            // #ifdef PIXY_DEBUG
+            //             std::printf("error: checksum\n");
+            // #endif
             return PIXY_RESULT_CHECKSUM_ERROR;
         }
     }
