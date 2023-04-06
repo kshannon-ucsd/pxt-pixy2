@@ -39,7 +39,7 @@ public:
         uint8_t i;
         if (cs)
             *cs = 0;
-        Buffer resp = pins::i2cReadBuffer(m_addr, len, true);
+        Buffer resp = pins::i2cReadBuffer(m_addr, len, false);
         for (i = 0; i < len; i++)
         {
             buf[i] = resp->data[i];
@@ -59,7 +59,7 @@ public:
             else
                 packet = PIXY_I2C_MAX_SEND;
             Buffer req = pxt::mkBuffer(buf + i, packet);
-            int resp = pins::i2cWriteBuffer(m_addr, req, true);
+            int resp = pins::i2cWriteBuffer(m_addr, req, false);
             if (resp == MICROBIT_I2C_ERROR) {
                 return 0;
             }
