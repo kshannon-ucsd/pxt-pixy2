@@ -1,4 +1,4 @@
-#include "Pixy2.h"
+#include "Pixy2I2C.h"
 
 /**
  * Provides access to the Pixy2 camera.
@@ -7,13 +7,13 @@ namespace pixy2
 {
     // TODO: Set complicated/unneeded functions to advanced=true so they don't show up in the toolbox
     // -------------- General APIs --------------
-    Pixy2 *pixy = nullptr;
+    Pixy2I2C *pixy = nullptr;
     String COMMA = mkString(",", 1);
-    Pixy2 *getPixy()
+    Pixy2I2C *getPixy()
     {
         if (pixy == nullptr)
         {
-            pixy = new Pixy2();
+            pixy = new Pixy2I2C();
             pixy->init();
         }
         return pixy;

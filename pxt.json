@@ -7,7 +7,8 @@
         "core": "*"
     },
     "files": [
-        "Pixy2.h",
+        "Pixy2SPI.h",
+        "Pixy2I2C.h",
         "Pixy2CCC.h",
         "Pixy2Line.h",
         "Pixy2Video.h",
