@@ -3,3 +3,4 @@ node_modules
 projects
 built
 pxt_modules
+cpp_autocomplete

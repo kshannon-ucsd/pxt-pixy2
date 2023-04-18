@@ -15,7 +15,8 @@ declare namespace pixy2 {
     //% weight=99 blockGap=8
     //% block="get version"
     //% blockId=pixy2_get_version
-    //% parts="pixy2" shim=pixy2::getVersion
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::getVersion
     function getVersion(): string;
 
     /**
@@ -27,7 +28,8 @@ declare namespace pixy2 {
     //% weight=98 blockGap=8
     //% block="change prog %prog"
     //% blockId=pixy2_change_prog
-    //% parts="pixy2" shim=pixy2::changeProg
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::changeProg
     function changeProg(prog: string): string;
 
     /**
@@ -40,7 +42,8 @@ declare namespace pixy2 {
     //% weight=97 blockGap=8
     //% block="set servos %s0 %s1"
     //% blockId=pixy2_set_servos
-    //% parts="pixy2" shim=pixy2::setServos
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::setServos
     function setServos(s0: uint16, s1: uint16): int8;
 
     /**
@@ -52,7 +55,8 @@ declare namespace pixy2 {
     //% weight=96 blockGap=8
     //% block="set camera brightness %brightness"
     //% blockId=pixy2_set_camera_brightness
-    //% parts="pixy2" shim=pixy2::setCameraBrightness
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::setCameraBrightness
     function setCameraBrightness(brightness: uint8): int8;
 
     /**
@@ -66,7 +70,8 @@ declare namespace pixy2 {
     //% weight=95 blockGap=8
     //% block="set led %r %g %b"
     //% blockId=pixy2_set_led
-    //% parts="pixy2" shim=pixy2::setLED
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::setLED
     function setLED(r: uint8, g: uint8, b: uint8): int8;
 
     /**
@@ -78,7 +83,8 @@ declare namespace pixy2 {
     //% weight=94 blockGap=8
     //% block="set lamp upper %upper|lower %lower"
     //% blockId=pixy2_set_lamp
-    //% parts="pixy2" shim=pixy2::setLamp
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::setLamp
     function setLamp(upper: boolean, lower: boolean): int32;
 
     /**
@@ -89,7 +95,8 @@ declare namespace pixy2 {
     //% weight=93 blockGap=8
     //% block="get resolution"
     //% blockId=pixy2_get_resolution
-    //% parts="pixy2" shim=pixy2::getResolution
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::getResolution
     function getResolution(): string;
 
     /**
@@ -100,8 +107,27 @@ declare namespace pixy2 {
     //% weight=92 blockGap=8
     //% block="get fps"
     //% blockId=pixy2_get_fps
-    //% parts="pixy2" shim=pixy2::getFPS
+    //% parts="pixy2"
+    //% group="General" shim=pixy2::getFPS
     function getFPS(): int8;
+
+    /**
+     * Internal use only. This function will be used in pixy2.ts to return the blocks of color connected components as a string.
+     */
+    //% shim=pixy2::cccGetBlocksAsString
+    function cccGetBlocksAsString(wait: boolean, sigmap: uint8, maxBlocks: uint8): string;
+
+    /**
+     * Internal use only. This function will be used in pixy2.ts to return the main features of line tracking as a string.
+     */
+    //% features.defl=0x07 wait.defl=1 shim=pixy2::lineGetMainFeaturesAsString
+    function lineGetMainFeaturesAsString(features?: uint8, wait?: boolean): string;
+
+    /**
+     * Internal use only. This function will be used in pixy2.ts to return all features of line tracking as a string.
+     */
+    //% features.defl=0x07 wait.defl=1 shim=pixy2::lineGetAllFeaturesAsString
+    function lineGetAllFeaturesAsString(features?: uint8, wait?: boolean): string;
 
     /**
      * lineSetMode() function sets various modes in the line tracking algorithm
@@ -118,7 +144,8 @@ declare namespace pixy2 {
     //% weight=88 blockGap=8
     //% block="set line mode %mode"
     //% blockId=pixy2_set_line_mode
-    //% parts="pixy2" shim=pixy2::lineSetMode
+    //% parts="pixy2"
+    //% group="Line Tracking" shim=pixy2::lineSetMode
     function lineSetMode(mode: uint8): int8;
 
     /**
@@ -130,7 +157,8 @@ declare namespace pixy2 {
     //% weight=87 blockGap=8
     //% block="set next turn %angle"
     //% blockId=pixy2_set_next_turn
-    //% parts="pixy2" shim=pixy2::lineSetNextTurn
+    //% parts="pixy2"
+    //% group="Line Tracking" shim=pixy2::lineSetNextTurn
     function lineSetNextTurn(angle: int16): int8;
 
     /**
@@ -142,7 +170,8 @@ declare namespace pixy2 {
     //% weight=86 blockGap=8
     //% block="set default turn %angle"
     //% blockId=pixy2_set_default_turn
-    //% parts="pixy2" shim=pixy2::lineSetDefaultTurn
+    //% parts="pixy2"
+    //% group="Line Tracking" shim=pixy2::lineSetDefaultTurn
     function lineSetDefaultTurn(angle: int16): int8;
 
     /**
@@ -154,7 +183,8 @@ declare namespace pixy2 {
     //% weight=85 blockGap=8
     //% block="set vector %index"
     //% blockId=pixy2_set_vector
-    //% parts="pixy2" shim=pixy2::lineSetVector
+    //% parts="pixy2"
+    //% group="Line Tracking" shim=pixy2::lineSetVector
     function lineSetVector(index: uint8): int8;
 
     /**
@@ -165,22 +195,15 @@ declare namespace pixy2 {
     //% weight=84 blockGap=8
     //% block="reverse vector"
     //% blockId=pixy2_reverse_vector
-    //% parts="pixy2" shim=pixy2::lineReverseVector
+    //% parts="pixy2"
+    //% group="Line Tracking" shim=pixy2::lineReverseVector
     function lineReverseVector(): int8;
 
     /**
-     * videoGetRGB() is currently the only function supported by the video program. It takes an x and y location in the image and returns red, green, blue values of the pixel. The individual values of red, green and blue vary from 0 to 255. Instead of using just one pixel, videoGetRGB() takes a 5×5 section of pixels centered at the x, y location and performs an average of all 25 pixels to obtain a representative result. Locations on the edge or close to the edge of the image are allowed, but will result in fewer pixels being averaged. The width and height values are both available through pixy.frameWidth and pixy.frameHeight, if you don't want to remember their specific values.
-     * @param x The x location of the pixel.
-     * @param y The y location of the pixel.
-     * @param saturate [Optional] The saturate argument when set to true (default) will scale all RGB values such that the greatest of the three values (r, g and b) is maximized (saturated) at 255. When set to false, the unmodified RGB values are returned.
-     * @returns It returns the RGB value which contains r, g, b member values, if it succeeds, otherwise it returns 0 for all member values. //TODO: Can this be a bug incase the RGB value is 0,0,0?
+     * Internal use only. This function will be used in pixy2.ts to return the RGB values as an object
      */
-    //% help=pixy2/video-get-rgb
-    //% weight=83 blockGap=8
-    //% block="video get RGB x %x y %y r %r g %g b %b saturate %saturate"
-    //% blockId=pixy2_video_get_rgb
-    //% parts="pixy2" saturate.defl=1 shim=pixy2::videoGetRGB
-    function videoGetRGB(x: uint16, y: uint16, saturate?: boolean): string;
+    //% saturate.defl=1 shim=pixy2::videoGetRGBAsString
+    function videoGetRGBAsString(x: uint16, y: uint16, saturate?: boolean): string;
 }
 
 // Auto-generated. Do not edit. Really.

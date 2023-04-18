@@ -110,13 +110,6 @@ struct Barcode
     uint8_t m_code;
 };
 
-struct Features
-{
-    Vector *vectors;
-    Intersection *intersections;
-    Barcode *barcodes;
-};
-
 template <class LinkType>
 class TPixy2;
 

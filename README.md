@@ -1,6 +1,6 @@
 # pixy2
 
-This PXT package allows the BBC micro:bit to talk to the [pixy2](https://pixycam.com/pixy2/) cam using the [SPI](https://www.corelis.com/education/tutorials/spi-tutorial/) interface. The [pixy2 github](https://github.com/charmedlabs/pixy2) already has a [C++ implementation](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2) to talk to the Arduino board through the SPI interface. The package ports the Arduino code using [the porting guide](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide#SPI), modifies some of the code and builds it for the micro:bit target. The package was built for the "Hands-On Computing" course at UCSD.
+This PXT package allows the BBC micro:bit to talk to the [pixy2](https://pixycam.com/pixy2/) cam using the [SPI](https://www.corelis.com/education/tutorials/spi-tutorial/)/I2C interface. The [pixy2 github](https://github.com/charmedlabs/pixy2) already has a [C++ implementation](https://github.com/charmedlabs/pixy2/tree/master/src/host/arduino/libraries/Pixy2) to talk to the Arduino board through the SPI/I2C interface. The package ports the Arduino code using [the porting guide](https://docs.pixycam.com/wiki/doku.php?id=wiki:v2:porting_guide#SPI), modifies some of the code and builds it for the micro:bit target. The package was built for the "Hands-On Computing" course at UCSD.
 
 ## Usage
 
