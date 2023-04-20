@@ -1,6 +1,6 @@
 {
     "name": "pixy2",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Support for Pixy2 on the microbit",
     "license": "MIT",
     "dependencies": {
