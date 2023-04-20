@@ -1,11 +1,11 @@
 namespace pixy2 {
-    interface RGB {
+    export interface RGB {
         r: number;
         g: number;
         b: number;
     }
 
-    interface Block {
+    export interface Block {
         m_signature: number;
         m_x: number;
         m_y: number;
@@ -16,7 +16,7 @@ namespace pixy2 {
         m_age: number;
     }
 
-    interface Vector {
+    export interface Vector {
         m_x0: number;
         m_y0: number;
         m_x1: number;
@@ -25,13 +25,13 @@ namespace pixy2 {
         m_flags: number;
     }
 
-    interface IntersectionLine {
+    export interface IntersectionLine {
         m_index: number;
         m_reserved: number;
         m_angle: number;
     }
 
-    interface Intersection {
+    export interface Intersection {
         m_x: number;
         m_y: number;
         m_n: number;
@@ -39,14 +39,14 @@ namespace pixy2 {
         m_intLines: IntersectionLine[];
     }
 
-    interface Barcode {
+    export interface Barcode {
         m_x: number;
         m_y: number;
         m_flags: number;
         m_code: number;
     }
 
-    interface Features {
+    export interface Features {
         vectors: Vector[];
         intersections: Intersection[];
         barcodes: Barcode[];
